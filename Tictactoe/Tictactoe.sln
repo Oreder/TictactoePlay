@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 15 for Windows Desktop
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tictactoe", "Tictactoe\Tictactoe.csproj", "{3FCED259-1A85-429E-881E-94D834E23488}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3EA562D0-B7BA-4C08-869D-86772D995DE7}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3FCED259-1A85-429E-881E-94D834E23488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FCED259-1A85-429E-881E-94D834E23488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FCED259-1A85-429E-881E-94D834E23488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FCED259-1A85-429E-881E-94D834E23488}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DAB1DB5A-6CE6-48E5-B073-A4DAD35ED516}
+	EndGlobalSection
+EndGlobal
