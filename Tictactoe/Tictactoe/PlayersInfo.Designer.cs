@@ -51,7 +51,7 @@
             // 
             // player02Mark
             // 
-            this.player02Mark.BackgroundImage = global::Tictactoe.Properties.Resources.tic;
+            this.player02Mark.BackgroundImage = global::Tictactoe.Properties.Resources.tac;
             this.player02Mark.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.player02Mark.Location = new System.Drawing.Point(249, 12);
             this.player02Mark.Name = "player02Mark";
@@ -71,7 +71,7 @@
             // 
             // player01Mark
             // 
-            this.player01Mark.BackgroundImage = global::Tictactoe.Properties.Resources.tac;
+            this.player01Mark.BackgroundImage = global::Tictactoe.Properties.Resources.tic;
             this.player01Mark.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.player01Mark.Location = new System.Drawing.Point(12, 12);
             this.player01Mark.Name = "player01Mark";

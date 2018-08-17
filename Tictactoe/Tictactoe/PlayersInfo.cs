@@ -26,8 +26,8 @@ namespace Tictactoe
 
             Players = new List<Player>()
             {
-                new Player("Player 1", Image.FromFile(Application.StartupPath + "\\Resources\\tac.png")),
-                new Player("Player 2", Image.FromFile(Application.StartupPath + "\\Resources\\tic.jpg"))
+                new Player("Player 1", player01Mark.BackgroundImage),
+                new Player("Player 2", player02Mark.BackgroundImage)
             };
 
             openFileDialog.InitialDirectory = Application.StartupPath;

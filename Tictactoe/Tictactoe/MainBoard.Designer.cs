@@ -28,23 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainBoard));
             this.pnPlayBoard = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.avartaGame = new System.Windows.Forms.PictureBox();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.btnUpdateInfo = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btnLAN = new System.Windows.Forms.Button();
+            this.pbMark = new System.Windows.Forms.PictureBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.tbIP = new System.Windows.Forms.TextBox();
             this.tbPlayerName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnUpdateInfo = new System.Windows.Forms.Button();
-            this.pbMark = new System.Windows.Forms.PictureBox();
-            this.avartaGame = new System.Windows.Forms.PictureBox();
+            this.clock = new System.Windows.Forms.Timer(this.components);
+            this.lbProgress = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.avartaGame)).BeginInit();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMark)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.avartaGame)).BeginInit();
             this.SuspendLayout();
             // 
             // pnPlayBoard
@@ -65,10 +68,23 @@
             this.panel2.Size = new System.Drawing.Size(229, 223);
             this.panel2.TabIndex = 1;
             // 
+            // avartaGame
+            // 
+            this.avartaGame.BackColor = System.Drawing.Color.Transparent;
+            this.avartaGame.BackgroundImage = global::Tictactoe.Properties.Resources.logo;
+            this.avartaGame.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.avartaGame.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.avartaGame.Location = new System.Drawing.Point(0, 0);
+            this.avartaGame.Name = "avartaGame";
+            this.avartaGame.Size = new System.Drawing.Size(229, 223);
+            this.avartaGame.TabIndex = 0;
+            this.avartaGame.TabStop = false;
+            // 
             // panel4
             // 
             this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel4.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.panel4.Controls.Add(this.lbProgress);
             this.panel4.Controls.Add(this.btnUpdateInfo);
             this.panel4.Controls.Add(this.label1);
             this.panel4.Controls.Add(this.label2);
@@ -81,6 +97,26 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(229, 234);
             this.panel4.TabIndex = 2;
+            // 
+            // btnUpdateInfo
+            // 
+            this.btnUpdateInfo.Location = new System.Drawing.Point(123, 126);
+            this.btnUpdateInfo.Name = "btnUpdateInfo";
+            this.btnUpdateInfo.Size = new System.Drawing.Size(98, 31);
+            this.btnUpdateInfo.TabIndex = 5;
+            this.btnUpdateInfo.Text = "Update info";
+            this.btnUpdateInfo.UseVisualStyleBackColor = true;
+            this.btnUpdateInfo.Click += new System.EventHandler(this.btnUpdateInfo_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Modern No. 20", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(73, 200);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(90, 30);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "to win";
             // 
             // label2
             // 
@@ -100,6 +136,17 @@
             this.btnLAN.TabIndex = 3;
             this.btnLAN.Text = "LAN";
             this.btnLAN.UseVisualStyleBackColor = true;
+            // 
+            // pbMark
+            // 
+            this.pbMark.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.pbMark.BackgroundImage = global::Tictactoe.Properties.Resources.ava;
+            this.pbMark.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pbMark.Location = new System.Drawing.Point(123, 4);
+            this.pbMark.Name = "pbMark";
+            this.pbMark.Size = new System.Drawing.Size(98, 116);
+            this.pbMark.TabIndex = 2;
+            this.pbMark.TabStop = false;
             // 
             // progressBar
             // 
@@ -124,48 +171,18 @@
             this.tbPlayerName.Size = new System.Drawing.Size(113, 22);
             this.tbPlayerName.TabIndex = 0;
             // 
-            // label1
+            // clock
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Modern No. 20", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(73, 200);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(90, 30);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "to win";
+            this.clock.Tick += new System.EventHandler(this.clock_Tick);
             // 
-            // btnUpdateInfo
+            // lbProgress
             // 
-            this.btnUpdateInfo.Location = new System.Drawing.Point(123, 126);
-            this.btnUpdateInfo.Name = "btnUpdateInfo";
-            this.btnUpdateInfo.Size = new System.Drawing.Size(98, 31);
-            this.btnUpdateInfo.TabIndex = 5;
-            this.btnUpdateInfo.Text = "Update info";
-            this.btnUpdateInfo.UseVisualStyleBackColor = true;
-            this.btnUpdateInfo.Click += new System.EventHandler(this.btnUpdateInfo_Click);
-            // 
-            // pbMark
-            // 
-            this.pbMark.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.pbMark.BackgroundImage = global::Tictactoe.Properties.Resources.ava;
-            this.pbMark.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pbMark.Location = new System.Drawing.Point(123, 4);
-            this.pbMark.Name = "pbMark";
-            this.pbMark.Size = new System.Drawing.Size(98, 116);
-            this.pbMark.TabIndex = 2;
-            this.pbMark.TabStop = false;
-            // 
-            // avartaGame
-            // 
-            this.avartaGame.BackColor = System.Drawing.Color.Transparent;
-            this.avartaGame.BackgroundImage = global::Tictactoe.Properties.Resources.logo;
-            this.avartaGame.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.avartaGame.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.avartaGame.Location = new System.Drawing.Point(0, 0);
-            this.avartaGame.Name = "avartaGame";
-            this.avartaGame.Size = new System.Drawing.Size(229, 223);
-            this.avartaGame.TabIndex = 0;
-            this.avartaGame.TabStop = false;
+            this.lbProgress.AutoSize = true;
+            this.lbProgress.Location = new System.Drawing.Point(3, 133);
+            this.lbProgress.Name = "lbProgress";
+            this.lbProgress.Size = new System.Drawing.Size(47, 17);
+            this.lbProgress.TabIndex = 6;
+            this.lbProgress.Text = "Time: ";
             // 
             // MainBoard
             // 
@@ -179,10 +196,10 @@
             this.Name = "MainBoard";
             this.Text = "Tictactoe";
             this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.avartaGame)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMark)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.avartaGame)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -201,6 +218,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnUpdateInfo;
+        private System.Windows.Forms.Timer clock;
+        private System.Windows.Forms.Label lbProgress;
     }
 }
 

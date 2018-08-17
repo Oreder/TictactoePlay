@@ -42,7 +42,7 @@ namespace Tictactoe
         /// <summary>
         /// Game is now running or not?
         /// </summary>
-        private bool gameRunning = false;
+        private bool isGameStarted;
 
         /// <summary>
         /// Board view
@@ -50,6 +50,29 @@ namespace Tictactoe
         private List<List<Button>> board;
         public List<List<Button>> Board { get => board; set => board = value; }
 
+        #endregion
+
+        #region Events
+        private event EventHandler gameStarted;
+        public event EventHandler GameStarted
+        {
+            add { gameStarted += value; }
+            remove { gameStarted -= value; }
+        }
+
+        private event EventHandler playerThinking;
+        public event EventHandler PlayerThinking
+        {
+            add { playerThinking += value; }
+            remove { playerThinking -= value; }
+        }
+
+        private event EventHandler endedGame;
+        public event EventHandler EndedGame
+        {
+            add { endedGame += value; }
+            remove { endedGame -= value; }
+        }
         #endregion
 
         #region Initialize
@@ -62,12 +85,14 @@ namespace Tictactoe
 
             Players = new List<Player>()
             {
-                new Player("Player 1", Image.FromFile(Application.StartupPath + "\\Resources\\tac.png")),
-                new Player("Player 2", Image.FromFile(Application.StartupPath + "\\Resources\\tic.jpg"))
+                new Player("Player 1", Image.FromFile(Application.StartupPath + "\\Resources\\tic.jpg")),
+                new Player("Player 2", Image.FromFile(Application.StartupPath + "\\Resources\\tac.png"))
             };
 
             currentPlayerIndex = 0;
             DisplayPlayerInfo();
+
+            isGameStarted = false;
         }
         #endregion
 
@@ -123,14 +148,20 @@ namespace Tictactoe
             DisplayPlayerInfo();
 
             // Change status
-            if (!gameRunning)
-                gameRunning = true;
+            if (!isGameStarted)
+            {
+                isGameStarted = true;
+                if (gameStarted != null)
+                    gameStarted(this, new EventArgs());
+            }
+
+            // Checking
+            if (playerThinking != null)
+                playerThinking(this, new EventArgs());
 
             // Check goal
             if (IsGoal(btn))
-            {
                 GameEnd();
-            }
         }
 
         /// <summary>
@@ -145,12 +176,6 @@ namespace Tictactoe
             Location = new Point(oldBtn.Location.X + oldBtn.Width, oldBtn.Location.Y),
             BackgroundImageLayout = ImageLayout.Stretch
         };
-
-        /// <summary>
-        /// Check game-running's status
-        /// </summary>
-        /// <returns></returns>
-        public bool GameRunning() => gameRunning;
 
         /// <summary>
         /// Display marks on board
@@ -185,12 +210,27 @@ namespace Tictactoe
         /// <summary>
         /// EOG
         /// </summary>
-        private void GameEnd()
+        public void GameEnd()
         {
-            string msg = Players[currentPlayerIndex].PlayerName + " has WON finally!";
-            MessageBox.Show(msg, "GOAL", MessageBoxButtons.OK);
+            if (endedGame != null)
+                endedGame(this, new EventArgs());
+        }
 
-            // Clear all Background
+        public string WinnerOfTheChicken(bool timeOut)
+        { 
+            string msg = Players[1 - CurrentPlayerIndex].PlayerName + " has WON finally!\nScored by: ";
+            return msg + (timeOut ? "Opponent ran out of time." : "5 checks in a line first.");
+        }
+
+        /// <summary>
+        /// Reset board
+        /// </summary>
+        public void ResetBoard()
+        {
+            // reset flag
+            isGameStarted = false;
+
+            // clear board
             foreach (var row in Board)
             {
                 var filled = from item in row
