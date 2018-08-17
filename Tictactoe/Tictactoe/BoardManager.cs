@@ -53,6 +53,19 @@ namespace Tictactoe
         #endregion
 
         #region Events
+        /// <summary>
+        /// Player going first is switched? 
+        /// </summary>
+        private event EventHandler playerSwitched;
+        public event EventHandler PlayerSwitched
+        {
+            add { playerSwitched += value; }
+            remove { playerSwitched -= value; }
+        }
+
+        /// <summary>
+        /// Game starts?
+        /// </summary>
         private event EventHandler gameStarted;
         public event EventHandler GameStarted
         {
@@ -60,6 +73,9 @@ namespace Tictactoe
             remove { gameStarted -= value; }
         }
 
+        /// <summary>
+        /// Current player is thinking?
+        /// </summary>
         private event EventHandler playerThinking;
         public event EventHandler PlayerThinking
         {
@@ -67,6 +83,9 @@ namespace Tictactoe
             remove { playerThinking -= value; }
         }
 
+        /// <summary>
+        /// Game ends?
+        /// </summary>
         private event EventHandler endedGame;
         public event EventHandler EndedGame
         {
@@ -89,10 +108,11 @@ namespace Tictactoe
                 new Player("Player 2", Image.FromFile(Application.StartupPath + "\\Resources\\tac.png"))
             };
 
-            currentPlayerIndex = 0;
+            CurrentPlayerIndex = 0;
             DisplayPlayerInfo();
 
             isGameStarted = false;
+            playerSwitched?.Invoke(this, new EventArgs());
         }
         #endregion
 
@@ -143,7 +163,7 @@ namespace Tictactoe
             
             // Display marks on board
             DisplayMarkOnBoard(btn);
-
+            
             // Display info
             DisplayPlayerInfo();
 
@@ -151,17 +171,15 @@ namespace Tictactoe
             if (!isGameStarted)
             {
                 isGameStarted = true;
-                if (gameStarted != null)
-                    gameStarted(this, new EventArgs());
+                gameStarted?.Invoke(this, new EventArgs());
             }
 
             // Checking
-            if (playerThinking != null)
-                playerThinking(this, new EventArgs());
+            playerThinking?.Invoke(this, new EventArgs());
 
             // Check goal
             if (IsGoal(btn))
-                GameEnd();
+                endedGame?.Invoke(this, new EventArgs());
         }
 
         /// <summary>
@@ -184,7 +202,7 @@ namespace Tictactoe
         private void DisplayMarkOnBoard(Button btn)
         {
             btn.BackgroundImage = Players[CurrentPlayerIndex].MarkImage;
-            CurrentPlayerIndex = (CurrentPlayerIndex == 0) ? 1 : 0;
+            SwitchPlayer();
         }
 
         /// <summary>
@@ -205,16 +223,16 @@ namespace Tictactoe
             Players = players;
             DisplayPlayerInfo();
         }
-        #endregion
 
         /// <summary>
-        /// EOG
+        /// Update the first going
         /// </summary>
-        public void GameEnd()
+        public void SwitchPlayer()
         {
-            if (endedGame != null)
-                endedGame(this, new EventArgs());
+            CurrentPlayerIndex = 1 - CurrentPlayerIndex;
+            DisplayPlayerInfo();
         }
+        #endregion
 
         public string WinnerOfTheChicken(bool timeOut)
         { 

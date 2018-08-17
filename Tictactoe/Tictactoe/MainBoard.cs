@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Tictactoe
@@ -15,6 +14,7 @@ namespace Tictactoe
         {
             InitializeComponent();
 
+            //progressBar = new ProgressBarConfig();
             progressBar.Step = Const.PROGRESS_STEP;
             progressBar.Maximum = Const.PROGRESS_MAX;
             progressBar.Value = 0;
@@ -25,33 +25,61 @@ namespace Tictactoe
 
             boardManager = new BoardManager(pnPlayBoard, tbPlayerName, pbMark);
             boardManager.GameStarted += BoardManager_GameStarted;
+            boardManager.PlayerSwitched += BoardManager_PlayerSwitched;
             boardManager.PlayerThinking += BoardManager_PlayerThinking;
             boardManager.EndedGame += BoardManager_EndedGame;
 
             boardManager.DrawBoard();
         }
-
+        
+        #region Event: GameStarted
         private void BoardManager_GameStarted(object sender, EventArgs e)
         {
             btnUpdateInfo.Enabled = false;
+            btnSwitchPlayer.Enabled = false;
         }
+        #endregion
 
+        #region Event: PlayerSwitched
+        private void BoardManager_PlayerSwitched(object sender, EventArgs e)
+        {
+            boardManager.SwitchPlayer();
+        }
+        #endregion
+
+        #region Event: PlayerThinking
+        private void BoardManager_PlayerThinking(object sender, EventArgs e)
+        {
+            progressBar.Value = 0;
+            clock.Start();
+        }
+        #endregion
+
+        #region Event: GameEnd
+        /// <summary>
+        /// What to do when game ends
+        /// </summary>
         private void GameEnd()
         {
             clock.Stop();
-            Enabled = false;
+            Enabled = false;    // Main board
             MessageBox.Show(boardManager.WinnerOfTheChicken(timeOut), "GOAL");
 
             GameReset();
         }
 
+        /// <summary>
+        /// Reset new game
+        /// </summary>
         private void GameReset()
         {
-            Enabled = true;
+            Enabled = true;     // Main board
             timeOut = false;
             progressBar.Value = 0;
             boardManager.ResetBoard();
+
             btnUpdateInfo.Enabled = true;
+            btnSwitchPlayer.Enabled = true;
         }
 
         private void BoardManager_EndedGame(object sender, EventArgs e)
@@ -59,16 +87,10 @@ namespace Tictactoe
             GameEnd();
         }
 
-        private void BoardManager_PlayerThinking(object sender, EventArgs e)
-        {
-            progressBar.Value = 0;
-            clock.Start();
-        }
-
         private void clock_Tick(object sender, EventArgs e)
         {
             progressBar.PerformStep();
-            lbProgress.Text = "Time: " + progressBar.Value.ToString();
+            lbProgress.Text = "Remaining: " + string.Format("{0:F2}", (Const.PROGRESS_MAX - progressBar.Value) / 1000.0);
 
             if (progressBar.Value >= Const.PROGRESS_MAX)
             {
@@ -76,10 +98,11 @@ namespace Tictactoe
                 GameEnd();
             }
         }
+        #endregion
 
         private void btnUpdateInfo_Click(object sender, EventArgs e)
         {
-            var playersInfo = new PlayersInfo(this);
+            var playersInfo = new PlayersInfo(this, boardManager.Players);
             playersInfo.ShowDialog();
 
             boardManager.UpdatePlayersInfo(playersInfo.Players);

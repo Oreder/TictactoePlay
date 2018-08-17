@@ -18,20 +18,23 @@ namespace Tictactoe
 
         public List<Player> Players { get => players; set => players = value; }
 
-        public PlayersInfo(MainBoard main)
+        public PlayersInfo(MainBoard main, List<Player> players)
         {
             InitializeComponent();
+
             mainBoard = main;
             main.Enabled = false;
 
-            Players = new List<Player>()
-            {
-                new Player("Player 1", player01Mark.BackgroundImage),
-                new Player("Player 2", player02Mark.BackgroundImage)
-            };
-
             openFileDialog.InitialDirectory = Application.StartupPath;
             openFileDialog.Filter = "Pictures (*.png, *.jpg)|*.png; *.jpg";
+
+            Players = players;
+
+            player01Name.Text = Players[0].PlayerName;
+            player01Mark.BackgroundImage = Players[0].MarkImage;
+
+            player02Name.Text = Players[1].PlayerName;
+            player02Mark.BackgroundImage = Players[1].MarkImage;
         }
 
         private void btnConfirm_Click(object sender, EventArgs e)

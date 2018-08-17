@@ -34,6 +34,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.avartaGame = new System.Windows.Forms.PictureBox();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.btnSwitchPlayer = new System.Windows.Forms.Button();
             this.btnUpdateInfo = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -56,16 +57,16 @@
             this.pnPlayBoard.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnPlayBoard.Location = new System.Drawing.Point(0, 0);
             this.pnPlayBoard.Name = "pnPlayBoard";
-            this.pnPlayBoard.Size = new System.Drawing.Size(812, 553);
+            this.pnPlayBoard.Size = new System.Drawing.Size(843, 603);
             this.pnPlayBoard.TabIndex = 0;
             // 
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.Controls.Add(this.avartaGame);
-            this.panel2.Location = new System.Drawing.Point(579, 3);
+            this.panel2.Location = new System.Drawing.Point(590, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(229, 223);
+            this.panel2.Size = new System.Drawing.Size(249, 243);
             this.panel2.TabIndex = 1;
             // 
             // avartaGame
@@ -76,7 +77,7 @@
             this.avartaGame.Dock = System.Windows.Forms.DockStyle.Fill;
             this.avartaGame.Location = new System.Drawing.Point(0, 0);
             this.avartaGame.Name = "avartaGame";
-            this.avartaGame.Size = new System.Drawing.Size(229, 223);
+            this.avartaGame.Size = new System.Drawing.Size(249, 243);
             this.avartaGame.TabIndex = 0;
             this.avartaGame.TabStop = false;
             // 
@@ -85,6 +86,7 @@
             this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel4.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.panel4.Controls.Add(this.lbProgress);
+            this.panel4.Controls.Add(this.btnSwitchPlayer);
             this.panel4.Controls.Add(this.btnUpdateInfo);
             this.panel4.Controls.Add(this.label1);
             this.panel4.Controls.Add(this.label2);
@@ -93,16 +95,26 @@
             this.panel4.Controls.Add(this.progressBar);
             this.panel4.Controls.Add(this.tbIP);
             this.panel4.Controls.Add(this.tbPlayerName);
-            this.panel4.Location = new System.Drawing.Point(579, 232);
+            this.panel4.Location = new System.Drawing.Point(590, 252);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(229, 234);
+            this.panel4.Size = new System.Drawing.Size(249, 268);
             this.panel4.TabIndex = 2;
+            // 
+            // btnSwitchPlayer
+            // 
+            this.btnSwitchPlayer.Location = new System.Drawing.Point(146, 163);
+            this.btnSwitchPlayer.Name = "btnSwitchPlayer";
+            this.btnSwitchPlayer.Size = new System.Drawing.Size(98, 31);
+            this.btnSwitchPlayer.TabIndex = 5;
+            this.btnSwitchPlayer.Text = "Switch";
+            this.btnSwitchPlayer.UseVisualStyleBackColor = true;
+            this.btnSwitchPlayer.Click += new System.EventHandler(this.BoardManager_PlayerSwitched);
             // 
             // btnUpdateInfo
             // 
-            this.btnUpdateInfo.Location = new System.Drawing.Point(123, 126);
+            this.btnUpdateInfo.Location = new System.Drawing.Point(146, 126);
             this.btnUpdateInfo.Name = "btnUpdateInfo";
-            this.btnUpdateInfo.Size = new System.Drawing.Size(98, 31);
+            this.btnUpdateInfo.Size = new System.Drawing.Size(98, 36);
             this.btnUpdateInfo.TabIndex = 5;
             this.btnUpdateInfo.Text = "Update info";
             this.btnUpdateInfo.UseVisualStyleBackColor = true;
@@ -112,7 +124,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Modern No. 20", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(73, 200);
+            this.label1.Location = new System.Drawing.Point(82, 233);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(90, 30);
             this.label1.TabIndex = 4;
@@ -122,7 +134,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Modern No. 20", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(7, 170);
+            this.label2.Location = new System.Drawing.Point(16, 203);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(214, 30);
             this.label2.TabIndex = 4;
@@ -132,7 +144,7 @@
             // 
             this.btnLAN.Location = new System.Drawing.Point(4, 90);
             this.btnLAN.Name = "btnLAN";
-            this.btnLAN.Size = new System.Drawing.Size(113, 30);
+            this.btnLAN.Size = new System.Drawing.Size(136, 30);
             this.btnLAN.TabIndex = 3;
             this.btnLAN.Text = "LAN";
             this.btnLAN.UseVisualStyleBackColor = true;
@@ -142,7 +154,7 @@
             this.pbMark.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.pbMark.BackgroundImage = global::Tictactoe.Properties.Resources.ava;
             this.pbMark.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pbMark.Location = new System.Drawing.Point(123, 4);
+            this.pbMark.Location = new System.Drawing.Point(146, 4);
             this.pbMark.Name = "pbMark";
             this.pbMark.Size = new System.Drawing.Size(98, 116);
             this.pbMark.TabIndex = 2;
@@ -152,14 +164,14 @@
             // 
             this.progressBar.Location = new System.Drawing.Point(4, 33);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(113, 23);
+            this.progressBar.Size = new System.Drawing.Size(136, 23);
             this.progressBar.TabIndex = 1;
             // 
             // tbIP
             // 
             this.tbIP.Location = new System.Drawing.Point(4, 62);
             this.tbIP.Name = "tbIP";
-            this.tbIP.Size = new System.Drawing.Size(113, 22);
+            this.tbIP.Size = new System.Drawing.Size(136, 22);
             this.tbIP.TabIndex = 0;
             this.tbIP.Text = "127.0.0.1";
             // 
@@ -168,7 +180,7 @@
             this.tbPlayerName.Location = new System.Drawing.Point(4, 4);
             this.tbPlayerName.Name = "tbPlayerName";
             this.tbPlayerName.ReadOnly = true;
-            this.tbPlayerName.Size = new System.Drawing.Size(113, 22);
+            this.tbPlayerName.Size = new System.Drawing.Size(136, 22);
             this.tbPlayerName.TabIndex = 0;
             // 
             // clock
@@ -178,17 +190,18 @@
             // lbProgress
             // 
             this.lbProgress.AutoSize = true;
-            this.lbProgress.Location = new System.Drawing.Point(3, 133);
+            this.lbProgress.BackColor = System.Drawing.Color.Transparent;
+            this.lbProgress.Location = new System.Drawing.Point(3, 136);
             this.lbProgress.Name = "lbProgress";
-            this.lbProgress.Size = new System.Drawing.Size(47, 17);
+            this.lbProgress.Size = new System.Drawing.Size(119, 17);
             this.lbProgress.TabIndex = 6;
-            this.lbProgress.Text = "Time: ";
+            this.lbProgress.Text = "Remaining: 15.00";
             // 
             // MainBoard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(812, 553);
+            this.ClientSize = new System.Drawing.Size(843, 603);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.pnPlayBoard);
@@ -219,6 +232,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnUpdateInfo;
         private System.Windows.Forms.Timer clock;
+        private System.Windows.Forms.Button btnSwitchPlayer;
         private System.Windows.Forms.Label lbProgress;
     }
 }
