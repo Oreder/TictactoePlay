@@ -70,18 +70,22 @@ namespace Tictactoe
 
         private const int BUFFER_SIZE = 1024;
 
-        private bool isServer = true;
-
-        public bool IsServer { get => isServer; set => isServer = value; }
-
+        /// <summary>
+        /// SEND command
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public bool Send(object data)
         {
             var byteData = SerializeData(data);
-            //var sender = IsServer ? server : client;      // ERROR!!!
-            //return SendData(sender, byteData);
+            // client -> server (as client) - players both
             return SendData(client, byteData);
         }
 
+        /// <summary>
+        /// RECEIVE command
+        /// </summary>
+        /// <returns></returns>
         public object Receive()
         {
             byte[] data = new byte[BUFFER_SIZE];

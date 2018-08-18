@@ -8,3 +8,4 @@ A simple game by C-sharp
 + Part 05: Switch players
 + Part 06: Match menu
 + Part 07: LAN connection settings
++ Part 08: Display opponent's step in LAN connection

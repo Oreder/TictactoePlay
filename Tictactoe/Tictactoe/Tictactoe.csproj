@@ -57,6 +57,7 @@
       <DependentUpon>MainBoard.cs</DependentUpon>
     </Compile>
     <Compile Include="MatchStep.cs" />
+    <Compile Include="NetworkData.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayersInfo.cs">
       <SubType>Form</SubType>

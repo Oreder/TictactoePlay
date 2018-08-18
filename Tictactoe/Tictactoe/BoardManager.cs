@@ -82,8 +82,8 @@ namespace Tictactoe
         /// <summary>
         /// Current player is thinking?
         /// </summary>
-        private event EventHandler playerThinking;
-        public event EventHandler PlayerThinking
+        private event EventHandler<ButtonClickedEventArgs> playerThinking;
+        public event EventHandler<ButtonClickedEventArgs> PlayerThinking
         {
             add { playerThinking += value; }
             remove { playerThinking -= value; }
@@ -162,7 +162,7 @@ namespace Tictactoe
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Btn_Click(object sender, System.EventArgs e)
+        private void Btn_Click(object sender, EventArgs e)
         {
             Button btn = sender as Button;
 
@@ -189,7 +189,45 @@ namespace Tictactoe
             }
 
             // Checking
-            playerThinking?.Invoke(this, new EventArgs());
+            playerThinking?.Invoke(this, new ButtonClickedEventArgs(GetPoint(btn)));
+
+            // Check goal
+            if (IsGoal(btn))
+                endedGame?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// For opponent
+        /// </summary>
+        /// <param name="location"></param>
+        public void OpponentPlayerThinking(Point location)
+        {
+            Button btn = Board[location.Y][location.X];
+
+            if (btn.BackgroundImage != null)
+                return;
+
+            // Display marks on board
+            DisplayMarkOnBoard(btn);
+
+            // Save step to stack
+            matchSteps.Push(new MatchStep(GetPoint(btn), CurrentPlayerIndex));
+
+            // Switch player
+            SwitchPlayer();
+
+            // Display info
+            DisplayPlayerInfo();
+
+            // Change status
+            if (!isGameStarted)
+            {
+                isGameStarted = true;
+                gameStarted?.Invoke(this, new EventArgs());
+            }
+
+            // Checking : NO NEED
+            //playerThinking?.Invoke(this, new ButtonClickedEventArgs(GetPoint(btn)));
 
             // Check goal
             if (IsGoal(btn))
@@ -406,5 +444,20 @@ namespace Tictactoe
             return count >= 5;
         }
         #endregion
+    }
+
+    /// <summary>
+    /// Propose: Get clicked button position through event
+    /// </summary>
+    public class ButtonClickedEventArgs : EventArgs
+    {
+        private Point clickedPoint;
+
+        public Point ClickedPoint { get => clickedPoint; set => clickedPoint = value; }
+
+        public ButtonClickedEventArgs(Point point)
+        {
+            ClickedPoint = point;
+        }
     }
 }

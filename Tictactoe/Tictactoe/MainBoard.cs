@@ -2,6 +2,7 @@
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows.Forms;
+using static Tictactoe.NetworkData;
 
 namespace Tictactoe
 {
@@ -18,6 +19,9 @@ namespace Tictactoe
         public MainBoard()
         {
             InitializeComponent();
+
+            // avoid change interface when using multi-thread
+            CheckForIllegalCrossThreadCalls = false;
 
             progressBar.Step = Const.PROGRESS_STEP;
             progressBar.Maximum = Const.PROGRESS_MAX;
@@ -54,10 +58,14 @@ namespace Tictactoe
         #endregion
 
         #region Event: PlayerThinking
-        private void BoardManager_PlayerThinking(object sender, EventArgs e)
+        private void BoardManager_PlayerThinking(object sender, ButtonClickedEventArgs e)
         {
             progressBar.Value = 0;
+            pnPlayBoard.Enabled = false;
             clock.Start();
+
+            networkManager.Send(new NetworkData((int)COMMAND.CHECKPOINT, null, e.ClickedPoint));
+            Listen();
         }
         #endregion
 
@@ -170,6 +178,12 @@ namespace Tictactoe
         }
         #endregion
 
+        #region LAN Connection
+        /// <summary>
+        /// Show local IPv4
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainBoard_Shown(object sender, EventArgs e)
         {
             tbIP.Text = networkManager.GetLocalIPv4(NetworkInterfaceType.Wireless80211);
@@ -179,52 +193,75 @@ namespace Tictactoe
 
         private void btnLAN_Click(object sender, EventArgs e)
         {
+            // Fix bugs
+            btnUpdateInfo.Enabled = false;
+            btnSwitchPlayer.Enabled = false;
+
             // Config IP
             networkManager.IP = tbIP.Text;
 
             // Server is not created!
             if (!networkManager.ConnectToServer())
             {
+                // SERVER
                 networkManager.CreateServer();
-
-                // if client sent data, server must listen always
-                var listenThread = new Thread(() =>
-                {
-                    // Pause 0.5s to try listen from clients
-                    Thread.Sleep(500);
-
-                    while (true)
-                    {
-                        // Server tries to listen every moment, 
-                        // until get receipt-pack from client
-                        try { Listen(); break; }
-                        catch { }
-                    }
-                })
-                {
-                    IsBackground = true
-                };
-                listenThread.Start();
+                pnPlayBoard.Enabled = true;
             }
             else    // Server has been ready!
             {
-                var listenThread = new Thread(() =>
-                {
-                    Listen();
-                })
-                {
-                    IsBackground = true
-                };
-                listenThread.Start();
-
-                networkManager.Send("Tictactoe LAN");
+                // CLIENTS
+                pnPlayBoard.Enabled = false;
+                Listen();
             }
         }
 
         private void Listen()
         {
-            string data = (string)networkManager.Receive();
-            MessageBox.Show(data);
+            var listenThread = new Thread(() =>
+                {
+                    try
+                    {
+                        var data = (NetworkData)networkManager.Receive();
+                        ProcessData(data);
+                    }
+                    catch { }
+                })
+            {
+                IsBackground = true
+            };
+            listenThread.Start();
         }
+
+        private void ProcessData(NetworkData data)
+        {
+            switch (data.Command)
+            {
+                case (int)COMMAND.NOTIFY:
+                    MessageBox.Show(data.Message, "Notification");
+                    break;
+                case (int)COMMAND.CHECKPOINT:
+                    Invoke((MethodInvoker)(() =>
+                    {
+                        progressBar.Value = 0;
+                        pnPlayBoard.Enabled = true;
+                        clock.Start();
+                        boardManager.OpponentPlayerThinking(data.Location);
+                    }));
+                    break;
+                case (int)COMMAND.NEWGAME:
+                    break;
+                case (int)COMMAND.ENDGAME:
+                    break;
+                case (int)COMMAND.UNDO:
+                    break;
+                case (int)COMMAND.QUIT:
+                    break;
+                default:
+                    break;
+            }
+
+            Listen();
+        }
+        #endregion
     }
 }
