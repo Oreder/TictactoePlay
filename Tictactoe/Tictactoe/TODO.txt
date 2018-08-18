@@ -1,0 +1,53 @@
+﻿/// Events for keys and mouse
+private void Btn_KeyDown(object sender, KeyEventArgs e)
+{
+    var location = GetPoint(sender as Button);
+
+    switch (e.KeyCode)
+    {
+        // MOVE keys
+        case Keys.Up:
+            if (location.Y > 0)
+                location.Y--;
+            break;
+        case Keys.Down:
+            if (location.Y < Const.TICTAC_HEIGHT)
+                location.Y++;
+            break;
+        case Keys.Left:
+            if (location.X > 0)
+                location.X--;
+            break;
+        case Keys.Right:
+            if (location.X < Const.TICTAC_WIDTH)
+                location.X++;
+            break;
+
+        // SELECT key
+        case Keys.Enter:
+            Btn_Click(sender, new EventArgs());       
+
+            break;
+    }
+}
+
+private void Btn_MouseHover(object sender, EventArgs e)
+{
+    var btn = sender as Button;
+    if (btn.BackgroundImage == null)
+    {
+        btn.FlatAppearance.BorderSize = 1;
+        btn.FlatAppearance.BorderColor = Color.Blue;
+        btn.FlatAppearance.MouseDownBackColor = SystemColors.ButtonHighlight;
+    }
+}
+
+private void Btn_MouseLeave(object sender, EventArgs e)
+{
+    var btn = sender as Button;
+    if (btn.BackgroundImage == null)
+    {
+        btn.BackColor = Color.Transparent;
+        btn.FlatAppearance.BorderSize = 0;
+    }
+}

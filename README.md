@@ -6,3 +6,4 @@ A simple game by C-sharp
 + Part 03: Rule of game
 + Part 04: Progressing and timer
 + Part 05: Switch players
++ Part 06: Match menu

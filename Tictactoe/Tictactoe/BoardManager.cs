@@ -49,6 +49,12 @@ namespace Tictactoe
         /// </summary>
         private List<List<Button>> board;
         public List<List<Button>> Board { get => board; set => board = value; }
+        
+        /// <summary>
+        /// Stack of match steps
+        /// </summary>
+        private Stack<MatchStep> matchSteps;
+        public Stack<MatchStep> MatchSteps { get => matchSteps; set => matchSteps = value; }
 
         #endregion
 
@@ -108,6 +114,8 @@ namespace Tictactoe
                 new Player("Player 2", Image.FromFile(Application.StartupPath + "\\Resources\\tac.png"))
             };
 
+            MatchSteps = new Stack<MatchStep>();
+
             CurrentPlayerIndex = 0;
             DisplayPlayerInfo();
 
@@ -163,7 +171,13 @@ namespace Tictactoe
             
             // Display marks on board
             DisplayMarkOnBoard(btn);
-            
+
+            // Save step to stack
+            matchSteps.Push(new MatchStep(GetPoint(btn), CurrentPlayerIndex));
+
+            // Switch player
+            SwitchPlayer();
+
             // Display info
             DisplayPlayerInfo();
 
@@ -181,7 +195,7 @@ namespace Tictactoe
             if (IsGoal(btn))
                 endedGame?.Invoke(this, new EventArgs());
         }
-
+        
         /// <summary>
         /// Create board square by previous box
         /// </summary>
@@ -202,7 +216,6 @@ namespace Tictactoe
         private void DisplayMarkOnBoard(Button btn)
         {
             btn.BackgroundImage = Players[CurrentPlayerIndex].MarkImage;
-            SwitchPlayer();
         }
 
         /// <summary>
@@ -231,6 +244,29 @@ namespace Tictactoe
         {
             CurrentPlayerIndex = 1 - CurrentPlayerIndex;
             DisplayPlayerInfo();
+        }
+
+        /// <summary>
+        /// Undo command
+        /// </summary>
+        /// <returns></returns>
+        public bool Undo()
+        {
+            bool result = false;
+            if (matchSteps.Count > 0)
+            {
+                var current = matchSteps.Peek();
+                var button = Board[current.Location.Y][current.Location.X];
+                button.BackgroundImage = null;
+
+                CurrentPlayerIndex = current.PlayerIndex;
+                DisplayPlayerInfo();
+
+                matchSteps.Pop();
+                result = true;
+            }
+
+            return result;
         }
         #endregion
 

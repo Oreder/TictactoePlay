@@ -100,6 +100,7 @@ namespace Tictactoe
         }
         #endregion
 
+        #region Update player's info
         private void btnUpdateInfo_Click(object sender, EventArgs e)
         {
             var playersInfo = new PlayersInfo(this, boardManager.Players);
@@ -109,5 +110,58 @@ namespace Tictactoe
             playersInfo.Close();
             Enabled = true;         // MainBoard
         }
+        #endregion
+
+        #region Quit and Restart
+        /// <summary>
+        /// Restart
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void newMatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Enabled = false;
+            clock.Stop();
+
+            if (MessageBox.Show("Are you sure to restart match?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                GameReset();
+            else
+                clock.Start();
+
+            Enabled = true;
+        }
+
+        /// <summary>
+        /// Quit game
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainBoard_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            clock.Stop();
+            if (MessageBox.Show("Are you sure to quit game?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Stop) != DialogResult.OK)
+            {
+                e.Cancel = true;
+                clock.Start();
+            }
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        #endregion
+
+        #region Undo
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            clock.Stop();
+            if (!boardManager.Undo())
+                MessageBox.Show("No step to undo now! Go ahead.", "Error 404", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+
+            progressBar.Value = 0;
+            clock.Start();
+        }
+        #endregion
     }
 }

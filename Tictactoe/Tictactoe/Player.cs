@@ -16,6 +16,7 @@ namespace Tictactoe
         /// </summary>
         private Image markImage;
         public Image MarkImage { get => markImage; set => markImage = value; }
+
         #endregion
 
         public Player(string name, Image mark)
