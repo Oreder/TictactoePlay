@@ -7,3 +7,4 @@ A simple game by C-sharp
 + Part 04: Progressing and timer
 + Part 05: Switch players
 + Part 06: Match menu
++ Part 07: LAN connection settings

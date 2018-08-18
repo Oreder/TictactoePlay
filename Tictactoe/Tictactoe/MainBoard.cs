@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.NetworkInformation;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Tictactoe
@@ -6,15 +8,17 @@ namespace Tictactoe
     public partial class MainBoard : Form
     {
         #region Properties
-        BoardManager boardManager;
-        bool timeOut;
+
+        private BoardManager boardManager;
+        private bool timeOut;
+        private SocketManager networkManager;
+
         #endregion
 
         public MainBoard()
         {
             InitializeComponent();
 
-            //progressBar = new ProgressBarConfig();
             progressBar.Step = Const.PROGRESS_STEP;
             progressBar.Maximum = Const.PROGRESS_MAX;
             progressBar.Value = 0;
@@ -30,6 +34,8 @@ namespace Tictactoe
             boardManager.EndedGame += BoardManager_EndedGame;
 
             boardManager.DrawBoard();
+
+            networkManager = new SocketManager();
         }
         
         #region Event: GameStarted
@@ -163,5 +169,62 @@ namespace Tictactoe
             clock.Start();
         }
         #endregion
+
+        private void MainBoard_Shown(object sender, EventArgs e)
+        {
+            tbIP.Text = networkManager.GetLocalIPv4(NetworkInterfaceType.Wireless80211);
+            if (string.IsNullOrEmpty(tbIP.Text))
+                tbIP.Text = networkManager.GetLocalIPv4(NetworkInterfaceType.Ethernet);
+        }
+
+        private void btnLAN_Click(object sender, EventArgs e)
+        {
+            // Config IP
+            networkManager.IP = tbIP.Text;
+
+            // Server is not created!
+            if (!networkManager.ConnectToServer())
+            {
+                networkManager.CreateServer();
+
+                // if client sent data, server must listen always
+                var listenThread = new Thread(() =>
+                {
+                    // Pause 0.5s to try listen from clients
+                    Thread.Sleep(500);
+
+                    while (true)
+                    {
+                        // Server tries to listen every moment, 
+                        // until get receipt-pack from client
+                        try { Listen(); break; }
+                        catch { }
+                    }
+                })
+                {
+                    IsBackground = true
+                };
+                listenThread.Start();
+            }
+            else    // Server has been ready!
+            {
+                var listenThread = new Thread(() =>
+                {
+                    Listen();
+                })
+                {
+                    IsBackground = true
+                };
+                listenThread.Start();
+
+                networkManager.Send("Tictactoe LAN");
+            }
+        }
+
+        private void Listen()
+        {
+            string data = (string)networkManager.Receive();
+            MessageBox.Show(data);
+        }
     }
 }

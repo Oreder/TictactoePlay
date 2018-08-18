@@ -165,6 +165,7 @@
             this.btnLAN.TabIndex = 3;
             this.btnLAN.Text = "LAN";
             this.btnLAN.UseVisualStyleBackColor = true;
+            this.btnLAN.Click += new System.EventHandler(this.btnLAN_Click);
             // 
             // pbMark
             // 
@@ -263,6 +264,7 @@
             this.Name = "MainBoard";
             this.Text = "Tictactoe";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainBoard_FormClosing);
+            this.Shown += new System.EventHandler(this.MainBoard_Shown);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.avartaGame)).EndInit();
             this.panel4.ResumeLayout(false);
