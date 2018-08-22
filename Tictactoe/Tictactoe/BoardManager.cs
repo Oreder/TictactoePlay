@@ -306,6 +306,16 @@ namespace Tictactoe
 
             return result;
         }
+
+        public bool UndoLAN()
+        {
+            if (matchSteps.Count < 2)
+                return false;
+
+            Undo();
+            Undo();
+            return true;
+        }
         #endregion
 
         public string WinnerOfTheChicken(bool timeOut)

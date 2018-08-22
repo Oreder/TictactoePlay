@@ -51,20 +51,29 @@ namespace Tictactoe
         #endregion
 
         #region Event: PlayerSwitched
-        private void BoardManager_PlayerSwitched(object sender, EventArgs e)
+        private void SwitchPlayer(bool boardFlag)
         {
             boardManager.SwitchPlayer();
+            pnPlayBoard.Enabled = boardFlag;
+        }
+
+        private void BoardManager_PlayerSwitched(object sender, EventArgs e)
+        {
+            SwitchPlayer(true);
+            networkManager.Send(new NetworkData((int)COMMAND.SWITCHPLAYER));
         }
         #endregion
 
         #region Event: PlayerThinking
         private void BoardManager_PlayerThinking(object sender, ButtonClickedEventArgs e)
         {
+            btnSwitchPlayer.Enabled = false;
             progressBar.Value = 0;
             pnPlayBoard.Enabled = false;
             clock.Start();
 
             networkManager.Send(new NetworkData((int)COMMAND.CHECKPOINT, null, e.ClickedPoint));
+            undoToolStripMenuItem.Enabled = false;
             Listen();
         }
         #endregion
@@ -76,7 +85,7 @@ namespace Tictactoe
         private void GameEnd()
         {
             clock.Stop();
-            Enabled = false;    // Main board
+            pnPlayBoard.Enabled = false;    // Main board
             MessageBox.Show(boardManager.WinnerOfTheChicken(timeOut), "GOAL");
 
             GameReset();
@@ -87,7 +96,6 @@ namespace Tictactoe
         /// </summary>
         private void GameReset()
         {
-            Enabled = true;     // Main board
             timeOut = false;
             progressBar.Value = 0;
             boardManager.ResetBoard();
@@ -99,6 +107,8 @@ namespace Tictactoe
         private void BoardManager_EndedGame(object sender, EventArgs e)
         {
             GameEnd();
+            pnPlayBoard.Enabled = false;
+            networkManager.Send(new NetworkData((int)COMMAND.ENDGAME));
         }
 
         private void clock_Tick(object sender, EventArgs e)
@@ -109,7 +119,7 @@ namespace Tictactoe
             if (progressBar.Value >= Const.PROGRESS_MAX)
             {
                 timeOut = true;
-                GameEnd();
+                BoardManager_EndedGame(sender, e);
             }
         }
         #endregion
@@ -121,6 +131,9 @@ namespace Tictactoe
             playersInfo.ShowDialog();
 
             boardManager.UpdatePlayersInfo(playersInfo.Players);
+            networkManager.Send(new NetworkData((int)COMMAND.UPDATEINFO));
+            //TODO: send updated info
+
             playersInfo.Close();
             Enabled = true;         // MainBoard
         }
@@ -134,15 +147,19 @@ namespace Tictactoe
         /// <param name="e"></param>
         private void newMatchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Enabled = false;
             clock.Stop();
 
             if (MessageBox.Show("Are you sure to restart match?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                pnPlayBoard.Enabled = false;
                 GameReset();
+                networkManager.Send(new NetworkData((int)COMMAND.NEWGAME));
+                pnPlayBoard.Enabled = true;
+            }
             else
+            {
                 clock.Start();
-
-            Enabled = true;
+            }
         }
 
         /// <summary>
@@ -158,6 +175,15 @@ namespace Tictactoe
                 e.Cancel = true;
                 clock.Start();
             }
+            else
+            {
+                try
+                {
+                    networkManager.Send(new NetworkData((int)COMMAND.QUIT));
+                    pnPlayBoard.Enabled = true;
+                }
+                catch { }
+            }
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -170,10 +196,13 @@ namespace Tictactoe
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             clock.Stop();
-            if (!boardManager.Undo())
+            if (!boardManager.UndoLAN())
                 MessageBox.Show("No step to undo now! Go ahead.", "Error 404", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-
-            progressBar.Value = 0;
+            else
+            {
+                progressBar.Value = 0;
+                networkManager.Send(new NetworkData((int)COMMAND.UNDO));
+            }
             clock.Start();
         }
         #endregion
@@ -195,7 +224,8 @@ namespace Tictactoe
         {
             // Fix bugs
             btnUpdateInfo.Enabled = false;
-            btnSwitchPlayer.Enabled = false;
+            
+            // TODO: set same players' info
 
             // Config IP
             networkManager.IP = tbIP.Text;
@@ -239,6 +269,7 @@ namespace Tictactoe
                 case (int)COMMAND.NOTIFY:
                     MessageBox.Show(data.Message, "Notification");
                     break;
+
                 case (int)COMMAND.CHECKPOINT:
                     Invoke((MethodInvoker)(() =>
                     {
@@ -246,16 +277,51 @@ namespace Tictactoe
                         pnPlayBoard.Enabled = true;
                         clock.Start();
                         boardManager.OpponentPlayerThinking(data.Location);
+                        undoToolStripMenuItem.Enabled = true;
                     }));
                     break;
-                case (int)COMMAND.NEWGAME:
+
+                case (int)COMMAND.UPDATEINFO:
+                    // TODO: update info
                     break;
+
+                case (int)COMMAND.SWITCHPLAYER:
+                    Invoke((MethodInvoker)(() =>
+                    {
+                        SwitchPlayer(false);
+                    }));
+                    break;
+
                 case (int)COMMAND.ENDGAME:
+                    Invoke((MethodInvoker)(() =>
+                    {
+                        GameReset();
+                        pnPlayBoard.Enabled = true;
+                    }));
                     break;
+
+                case (int)COMMAND.NEWGAME:
+                    Invoke((MethodInvoker)(() =>
+                    {
+                        clock.Stop();
+                        GameReset();
+                        pnPlayBoard.Enabled = false;
+                    }));
+                    break;
+
                 case (int)COMMAND.UNDO:
+                    boardManager.UndoLAN();
+                    progressBar.Value = 0;
                     break;
+
                 case (int)COMMAND.QUIT:
+                    clock.Stop();
+                    MessageBox.Show("Your opponent exit the game.", "Notification");
+
+                    GameReset();
+                    pnPlayBoard.Enabled = true;
                     break;
+
                 default:
                     break;
             }

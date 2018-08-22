@@ -23,10 +23,20 @@ namespace Tictactoe
             CHECKPOINT,
             NOTIFY,
             
+            UPDATEINFO,
+            SWITCHPLAYER,
+
             NEWGAME,
             ENDGAME,
             UNDO,
             QUIT
+        }
+
+        public NetworkData(int cmd)
+        {
+            Command = cmd;
+            Message = null;
+            Location = new Point();
         }
 
         public NetworkData(int cmd, string msg, Point point)
